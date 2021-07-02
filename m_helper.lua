@@ -56,10 +56,10 @@ local function contains(table, value)
 end
 
 
-local function get_kd(kills, assists)
+local function get_kd(kills, deaths)
     if kills == 0 then return 0 end
 
-    return kills / assists
+    return kills / deaths
 end
 
 local function draw_flag(ent, flag, clr, index)
@@ -83,7 +83,7 @@ local function get_flags()
         local ping = entity.get_prop(player_resource, "m_iPing", var.enemies[i].index)
         local kills = entity.get_prop(player_resource, "m_iKills", var.enemies[i].index)
         local deaths = entity.get_prop(player_resource, "m_iDeaths", var.enemies[i].index)
-        local kd = get_kd(kills, death)
+        local kd = get_kd(kills, deaths)
 
         if ping < 15 and contains(interface.flags_select, "Low ping") then
             var.enemies[i].low_ping = true
