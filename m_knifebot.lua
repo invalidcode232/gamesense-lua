@@ -1,3 +1,6 @@
+-- local variables for API functions. any changes to the line below will be lost on re-generation
+local client_set_event_callback, client_trace_line, entity_get_classname, entity_get_local_player, entity_get_player_weapon, entity_get_players, entity_get_prop, entity_hitbox_position, ui_get, ui_new_checkbox, ui_new_multiselect, ui_new_slider, ui_reference, ui_set_visible, ipairs, ui_set, ui_set_callback = client.set_event_callback, client.trace_line, entity.get_classname, entity.get_local_player, entity.get_player_weapon, entity.get_players, entity.get_prop, entity.hitbox_position, ui.get, ui.new_checkbox, ui.new_multiselect, ui.new_slider, ui.reference, ui.set_visible, ipairs, ui.set, ui.set_callback
+
 --[[
     Knifebot improvements
 
@@ -8,9 +11,9 @@ local type=type;local setmetatable=setmetatable;local tostring=tostring;local a=
 
 -- UI elements 
 local interface = {
-    switch = ui.new_checkbox("LUA", "B", "Enable knifebot improvements"),
-    options = ui.new_multiselect("LUA", "B", "Knifebot options", { "Disable AA on knife target", "Force DT recharge on knife" }),
-    min_dist_slider = ui.new_slider("LUA", "B", "Minimum distance to disable AA", 0, 1500, 600, true, nil, 1, { })
+    switch = ui_new_checkbox("LUA", "B", "Enable knifebot improvements"),
+    options = ui_new_multiselect("LUA", "B", "Knifebot options", { "Disable AA on knife target", "Force DT recharge on knife" }),
+    min_dist_slider = ui_new_slider("LUA", "B", "Minimum distance to disable AA", 0, 1500, 600, true, nil, 1, { })
 }
 
 local function contains(table, value)
@@ -18,7 +21,7 @@ local function contains(table, value)
 		return false
 	end
 	
-    table = ui.get(table)
+    table = ui_get(table)
     for i=0, #table do
         if table[i] == value then
             return true
@@ -28,34 +31,34 @@ local function contains(table, value)
 end
 
 local function handle_visibility()
-    ui.set_visible(interface.min_dist_slider, contains(interface.options, "Disable AA on knife target"))
+    ui_set_visible(interface.min_dist_slider, contains(interface.options, "Disable AA on knife target"))
 end
 
 handle_visibility()
 
 -- References
 local ref = {
-    rage_enabled = { ui.reference("RAGE", "Aimbot", "Enabled") },
-    aa_enabled = ui.reference("AA", "Anti-aimbot angles", "Enabled")
+    rage_enabled = { ui_reference("RAGE", "Aimbot", "Enabled") },
+    aa_enabled = ui_reference("AA", "Anti-aimbot angles", "Enabled")
 }
 
 local function get_wpn_class(ent)
-    return entity.get_classname(entity.get_player_weapon(ent))
+    return entity_get_classname(entity_get_player_weapon(ent))
 end
 
 local function is_visible(ent)
-    local me = entity.get_local_player()
-    local l_x, l_y, l_z = entity.hitbox_position(me, 0)
-    local e_x, e_y, e_z = entity.hitbox_position(ent, 0)
+    local me = entity_get_local_player()
+    local l_x, l_y, l_z = entity_hitbox_position(me, 0)
+    local e_x, e_y, e_z = entity_hitbox_position(ent, 0)
 
-    local frac, ent = client.trace_line(me, l_x, l_y, l_z, e_x, e_y, e_z)
+    local frac, ent = client_trace_line(me, l_x, l_y, l_z, e_x, e_y, e_z)
 
     return frac > 0.6
 end
 
 local function get_ent_dist(ent_1, ent_2)
-    local ent1_pos = Vector3(entity.get_prop(ent_1, "m_vecOrigin"))
-    local ent2_pos = Vector3(entity.get_prop(ent_2, "m_vecOrigin"))
+    local ent1_pos = Vector3(entity_get_prop(ent_1, "m_vecOrigin"))
+    local ent2_pos = Vector3(entity_get_prop(ent_2, "m_vecOrigin"))
 
     local dist = ent1_pos:dist_to(ent2_pos)
 
@@ -71,7 +74,7 @@ end
 
 -- Check if local player is damageable by any long-range weapon
 local function is_damageable()
-    local enemies = entity.get_players(true)
+    local enemies = entity_get_players(true)
 
     for i,v in ipairs(enemies) do
         if is_visible(v) and is_long_weapon(v) then return true end
@@ -81,47 +84,47 @@ local function is_damageable()
 end
 
 local function disable_aa_on_knife()
-    if not ui.get(interface.switch) or not contains(interface.options, "Disable AA on knife target") then
-        ui.set(ref.aa_enabled, true)
+    if not ui_get(interface.switch) or not contains(interface.options, "Disable AA on knife target") then
+        ui_set(ref.aa_enabled, true)
         return 
     end
 
-    local me = entity.get_local_player()
-    local enemies = entity.get_players(true)
+    local me = entity_get_local_player()
+    local enemies = entity_get_players(true)
     local should_disable_aa = false
 
     for i,v in ipairs(enemies) do
         if not is_damageable() and get_wpn_class(v) == "CKnife" and is_visible(v) then -- Check if enemy is using knife, visible, and not damageable
             local dist = get_ent_dist(me, v)
 
-            if dist < ui.get(interface.min_dist_slider) then
-                ui.set(ref.aa_enabled, false)
+            if dist < ui_get(interface.min_dist_slider) then
+                ui_set(ref.aa_enabled, false)
                 should_disable_aa = true;
             end
         end
     end
 
     if should_disable_aa == false then
-        ui.set(ref.aa_enabled, true)
+        ui_set(ref.aa_enabled, true)
     end
 end
 
 local function force_dt_recharge_knife()
-    if not ui.get(interface.switch) or not contains(interface.options, "Force DT recharge on knife") then
-        ui.set(ref.rage_enabled[1], true)
+    if not ui_get(interface.switch) or not contains(interface.options, "Force DT recharge on knife") then
+        ui_set(ref.rage_enabled[1], true)
         return 
     end
 
-    local me = entity.get_local_player()
+    local me = entity_get_local_player()
 
     -- this is retarded but if it works it works
-    ui.set(ref.rage_enabled[1], get_wpn_class(me) ~= "CKnife")
+    ui_set(ref.rage_enabled[1], get_wpn_class(me) ~= "CKnife")
 end
 
 -- Callbacks
-ui.set_callback(interface.options, handle_visibility)
+ui_set_callback(interface.options, handle_visibility)
 
-client.set_event_callback("setup_command", function(e)
+client_set_event_callback("setup_command", function(e)
     disable_aa_on_knife()
     force_dt_recharge_knife()
 end)

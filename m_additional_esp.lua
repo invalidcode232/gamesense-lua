@@ -1,3 +1,6 @@
+-- local variables for API functions. any changes to the line below will be lost on re-generation
+local client_set_event_callback, entity_get_bounding_box, entity_get_player_resource, entity_get_players, entity_get_prop, renderer_text, ui_get, ui_new_color_picker, ui_new_label, ui_new_multiselect, ipairs = client.set_event_callback, entity.get_bounding_box, entity.get_player_resource, entity.get_players, entity.get_prop, renderer.text, ui.get, ui.new_color_picker, ui.new_label, ui.new_multiselect, ipairs
+
 --[[
     Additional ESP flags
 
@@ -6,13 +9,13 @@
 
 -- UI elements
 local interface = {
-    flags_select = ui.new_multiselect("Visuals", "Other ESP", "Helper flags", { "High K/D", "Minus K/D", "Low ping", "High ping" }),
+    flags_select = ui_new_multiselect("Visuals", "Other ESP", "Helper flags", { "High K/D", "Minus K/D", "Low ping", "High ping" }),
 
-    dangerous_label = ui.new_label("Visuals", "Other ESP", "Dangerous flag"),
-    dangerous_clr = ui.new_color_picker("Visuals", "Other ESP", "dangerous_clr", 245, 50, 37, 155),
+    dangerous_label = ui_new_label("Visuals", "Other ESP", "Dangerous flag"),
+    dangerous_clr = ui_new_color_picker("Visuals", "Other ESP", "dangerous_clr", 245, 50, 37, 155),
 
-    safe_label = ui.new_label("Visuals", "Other ESP", "Safe flag"),
-    safe_clr = ui.new_color_picker("Visuals", "Other ESP", "safe_clr", 65, 245, 37, 255),
+    safe_label = ui_new_label("Visuals", "Other ESP", "Safe flag"),
+    safe_clr = ui_new_color_picker("Visuals", "Other ESP", "safe_clr", 65, 245, 37, 255),
 }
 
 -- Global variables
@@ -23,7 +26,7 @@ local var = {
 -- Setup global variables
 local function setup_vars()
     -- Get enemies
-    var.enemies = entity.get_players(true)
+    var.enemies = entity_get_players(true)
 
     -- Set everything to false
     for i, v in ipairs(var.enemies) do
@@ -46,7 +49,7 @@ local function contains(table, value)
 		return false
 	end
 	
-    table = ui.get(table)
+    table = ui_get(table)
     for i=0, #table do
         if table[i] == value then
             return true
@@ -63,7 +66,7 @@ local function get_kd(kills, deaths)
 end
 
 local function draw_flag(ent, flag, clr, index)
-    local x1, y1, x2, y2, alpha_mult = entity.get_bounding_box(ent)
+    local x1, y1, x2, y2, alpha_mult = entity_get_bounding_box(ent)
 
     if alpha_mult == 0 then return end
 
@@ -72,17 +75,17 @@ local function draw_flag(ent, flag, clr, index)
     local x = (x1 + x2) / 2
     local y = y1 - 15 - (8 * index)
 
-    renderer.text(x, y, clr[1], clr[2], clr[3], clr[4], "c-", nil, flag)
+    renderer_text(x, y, clr[1], clr[2], clr[3], clr[4], "c-", nil, flag)
 end
 
 -- Get enemy flags
 local function get_flags()
     for i, v in ipairs(var.enemies) do
-        local player_resource = entity.get_player_resource()
+        local player_resource = entity_get_player_resource()
 
-        local ping = entity.get_prop(player_resource, "m_iPing", var.enemies[i].index)
-        local kills = entity.get_prop(player_resource, "m_iKills", var.enemies[i].index)
-        local deaths = entity.get_prop(player_resource, "m_iDeaths", var.enemies[i].index)
+        local ping = entity_get_prop(player_resource, "m_iPing", var.enemies[i].index)
+        local kills = entity_get_prop(player_resource, "m_iKills", var.enemies[i].index)
+        local deaths = entity_get_prop(player_resource, "m_iDeaths", var.enemies[i].index)
         local kd = get_kd(kills, deaths)
 
         if ping < 15 and contains(interface.flags_select, "Low ping") then
@@ -100,8 +103,8 @@ local function get_flags()
 end
 
 local function draw_flags()
-    local safe_clr = { ui.get(interface.safe_clr) }
-    local dangerous_clr = { ui.get(interface.dangerous_clr) }
+    local safe_clr = { ui_get(interface.safe_clr) }
+    local dangerous_clr = { ui_get(interface.dangerous_clr) }
 
     for i, v in ipairs(var.enemies) do
         local index = 0
@@ -124,7 +127,7 @@ local function draw_flags()
     end
 end
 
-client.set_event_callback("paint", function()
+client_set_event_callback("paint", function()
     setup_vars()
     get_flags()
     draw_flags()
