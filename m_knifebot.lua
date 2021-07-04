@@ -33,6 +33,7 @@ end
 
 handle_visibility()
 
+-- References
 local ref = {
     rage_enabled = { ui.reference("RAGE", "Aimbot", "Enabled") },
     aa_enabled = ui.reference("AA", "Anti-aimbot angles", "Enabled")
