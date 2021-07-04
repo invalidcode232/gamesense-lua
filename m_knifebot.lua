@@ -65,7 +65,6 @@ local function get_ent_dist(ent_1, ent_2)
     return dist
 end
 
--- Function to check if enemy is using "long ranged" weapon
 local function is_long_weapon(ent)
     local ent_wpn = get_wpn_class(ent)
 
