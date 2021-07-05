@@ -12,7 +12,7 @@ local type=type;local setmetatable=setmetatable;local tostring=tostring;local a=
 -- UI elements 
 local interface = {
     switch = ui_new_checkbox("LUA", "B", "Enable knifebot improvements"),
-    options = ui_new_multiselect("LUA", "B", "Knifebot options", { "Disable AA on knife target", "Force DT recharge on knife" }),
+    options = ui_new_multiselect("LUA", "B", "Knifebot options", { "Legit AA on knife target", "Force DT recharge on knife" }),
     min_dist_slider = ui_new_slider("LUA", "B", "Minimum distance to disable AA", 0, 1500, 600, true, nil, 1, { })
 }
 
@@ -31,7 +31,7 @@ local function contains(table, value)
 end
 
 local function handle_visibility()
-    ui_set_visible(interface.min_dist_slider, contains(interface.options, "Disable AA on knife target"))
+    ui_set_visible(interface.min_dist_slider, contains(interface.options, "Legit AA on knife target"))
 end
 
 handle_visibility()
