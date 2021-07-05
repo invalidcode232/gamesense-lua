@@ -36,10 +36,12 @@ end
 
 handle_visibility()
 
--- References
 local ref = {
     rage_enabled = { ui_reference("RAGE", "Aimbot", "Enabled") },
-    aa_enabled = ui_reference("AA", "Anti-aimbot angles", "Enabled")
+
+    pitch = ui_reference("AA", "Anti-aimbot angles", "Pitch"),
+    yaw_base = ui_reference("AA", "Anti-aimbot angles", "Yaw base"),
+    yaw = { ui_reference("AA", "Anti-aimbot angles", "Yaw") }
 }
 
 local function get_wpn_class(ent)
@@ -65,6 +67,7 @@ local function get_ent_dist(ent_1, ent_2)
     return dist
 end
 
+-- Function to check if enemy is using "long ranged" weapon
 local function is_long_weapon(ent)
     local ent_wpn = get_wpn_class(ent)
 
@@ -82,29 +85,55 @@ local function is_damageable()
     return false
 end
 
+local cache = {
+    should_restore_cache = false,
+
+    pitch = "down",
+    yaw_base = "at targets",
+    yaw = 180,
+    yaw_slider = 0,
+}
+
+local function set_aa(pitch, yaw_base, yaw, yaw_slider)
+    ui_set(ref.pitch, pitch)
+    ui_set(ref.yaw_base, yaw_base)
+    ui_set(ref.yaw[1], yaw)
+    ui_set(ref.yaw[2], yaw_slider)
+end
+
 local function disable_aa_on_knife()
     if not ui_get(interface.switch) or not contains(interface.options, "Disable AA on knife target") then
-        ui_set(ref.aa_enabled, true)
+        set_aa(cache.pitch, cache.yaw_base, cache.yaw, cache.yaw_slider)
+        -- ui_set(ref.aa_enabled, true)
         return 
     end
 
     local me = entity_get_local_player()
     local enemies = entity_get_players(true)
-    local should_disable_aa = false
+    local should_legit_aa = false
 
     for i,v in ipairs(enemies) do
         if not is_damageable() and get_wpn_class(v) == "CKnife" and is_visible(v) then -- Check if enemy is using knife, visible, and not damageable
             local dist = get_ent_dist(me, v)
 
             if dist < ui_get(interface.min_dist_slider) then
-                ui_set(ref.aa_enabled, false)
-                should_disable_aa = true;
+                set_aa("off", "at targets", "off", 0)
+                should_legit_aa = true
+                cache.should_restore_cache = true
             end
         end
     end
 
-    if should_disable_aa == false then
-        ui_set(ref.aa_enabled, true)
+    if should_legit_aa == false then
+        if cache.should_restore_cache then
+            set_aa(cache.pitch, cache.yaw_base, cache.yaw, cache.yaw_slider)
+            cache.should_restore_cache = false
+        else
+            cache.pitch = ui_get(ref.pitch)
+            cache.yaw_base = ui_get(ref.yaw_base)
+            cache.yaw = ui_get(ref.yaw[1])
+            cache.yaw_slider = ui_get(ref.yaw[2])
+        end
     end
 end
 
