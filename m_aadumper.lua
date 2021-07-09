@@ -35,7 +35,6 @@ client.set_event_callback("paint", function ()
 
     renderer.text(100, 400 + addition, 255, 255, 255, 255, "c", nil, "Fake limit: " .. tostring(ui.get(ref.fakeyawlimit)))
     addition = addition + 20
-    print(ui.get(ref.fakeyawlimit))
 
     renderer.text(100, 400 + addition, 255, 255, 255, 255, "c", nil, "Body yaw mode: " .. tostring(ui.get(ref.bodyyaw[1])))
     addition = addition + 20
