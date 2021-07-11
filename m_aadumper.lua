@@ -1,3 +1,5 @@
+-- P.S: this is one of the first luas ive ever made, there are lots of optimizations and the code could be made 10x shorter but i dont use it anymore so couldnt be bothered.
+
 local ref = {
 	enabled = ui.reference("AA", "Anti-aimbot angles", "Enabled"),
 	pitch = ui.reference("AA", "Anti-aimbot angles", "pitch"),
