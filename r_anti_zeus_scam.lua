@@ -83,7 +83,7 @@ local function is_visible(ent)
 
     local frac, ent = client_trace_line(me, l_x, l_y, l_z, e_x, e_y, e_z)
 
-    return frac > 0.6
+    return frac > 0.7
 end
 
 -- Function to check if enemy is using "long ranged" weapon
