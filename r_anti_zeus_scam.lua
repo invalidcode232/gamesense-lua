@@ -90,7 +90,7 @@ end
 local function is_long_weapon(ent)
     local ent_wpn = get_wpn_class(ent)
 
-    return ent_wpn ~= "CWeaponTaser" and ent_wpn ~= "CKnife" and ent_wpn ~= "CC4" and ent_wpn ~= "CMolotovGrenade" and ent_wpn ~= "CSmokeGrenade" and ent_wpn ~= "CHEGrenade"
+    return ent_wpn ~= "CWeaponTaser" and ent_wpn ~= "CKnife" and ent_wpn ~= "CC4" and ent_wpn ~= "CMolotovGrenade" and ent_wpn ~= "CSmokeGrenade" and ent_wpn ~= "CHEGrenade" and ent_wpn ~= "CIncendiaryGrenade" and ent_wpn ~= "CFlashbang" and ent_wpn ~= "CDecoyGrenade"
 end
 
 -- Check if local player is damageable by any long-range weapon

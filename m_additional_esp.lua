@@ -118,7 +118,7 @@ local function draw_flags()
         end
 
         if var.enemies[i].high_kd then
-            draw_flag(var.enemies[i].index, "HIGH KD", safe_clr, index)
+            draw_flag(var.enemies[i].index, "HIGH KD", dangerous_clr, index)
             index = index + 1
         elseif var.enemies[i].low_kd then
             draw_flag(var.enemies[i].index, "MINUS KD", safe_clr, index)
