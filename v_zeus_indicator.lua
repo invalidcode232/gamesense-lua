@@ -18,6 +18,9 @@ local interface = {
     clr = ui_new_color_picker("Visuals", "Other ESP", "clr", 255, 255, 255, 255)
 }
 
+-- Get zeus icon
+local zeus_icon = images.load_png(readfile("zeus_icon_small.png"))
+
 -- Get weapon class name
 local function get_wpn_class(ent)
     return entity_get_classname(entity_get_player_weapon(ent))
@@ -50,9 +53,6 @@ local function draw_zeus_flag(ent, clr)
 
     local x = (x1 + x2) / 2
     local y = y1 - 15
-
-    -- Get zeus icon
-    local zeus_icon = images.load_png(readfile("zeus_icon_small.png"))
 
     local curtime = globals_curtime()
     local anim = math_sin(math_abs(-math.pi + (curtime * 2.5) % (math.pi * 2)))
