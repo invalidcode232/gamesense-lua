@@ -87,7 +87,6 @@ local function tp_helper()
         b_dmg = client.scale_damage(me, HITGROUP, b_dmg)
 
         if b_dmg > dmg then
-            print('Teleporting')
             ui.set(ref.dt[1], false)
             teleporting = true
             clr = {0, 255, 0, 255}
