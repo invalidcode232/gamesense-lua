@@ -1,3 +1,7 @@
+--[[
+    LUA NOT DONE, will fix later
+]]
+
 --region Dependencies
 if not pcall(require, 'gamesense/ref_lib') then
     error('Missing reference library. Please download at #dependencies channel')
