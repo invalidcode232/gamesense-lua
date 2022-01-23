@@ -110,7 +110,7 @@ local function can_zeus_enemy()
     local enemies = entity_get_players(true)
 
     for i, v in ipairs(enemies) do
-        if is_zeusable(me, v) then
+        if is_zeusable(v) then
             return true
         end
     end
