@@ -4,6 +4,8 @@
     Author: invalidcode#7810
 ]] 
 
+local csgo_weapons = require 'gamesense/csgo_weapons'
+
 -- Utils
 local function contains(table, value)
     for _, v in pairs(table) do
@@ -37,9 +39,11 @@ local ref = {
 
 -- Menu
 local TAB, CONTAINER = 'AA', 'Other'
+local WEAPONS = { 'SSG 08', 'AWP', 'R8 Revolver' }
 local interface = {
     switch = ui.new_checkbox(TAB, CONTAINER, 'Teleport helper'),
     tp_hk = ui.new_hotkey(TAB, CONTAINER, 'tp_hk', true),
+    tp_weapon_select = ui.new_multiselect(TAB, CONTAINER, 'Teleport weapons', WEAPONS),
     dmg_slider = ui.new_slider(TAB, CONTAINER, 'Minimum teleport damage', 1, 100, 1, true, nil, 1),
     ticks_slider = ui.new_slider(TAB, CONTAINER, 'Predicted ticks', 0, 30, 0, true, nil, 1),
     disable_air_switch = ui.new_checkbox(TAB, CONTAINER, 'Disable teleport in air'),
@@ -63,14 +67,20 @@ local clr = {0, 255, 0, 255} -- Indicator color
 local function tp_helper()
     local me = entity.get_local_player()
     
-    teleporting = false
-
     ui.set(ref.dt[1], true)
+    teleporting = false
 
     if not ui.get(interface.switch) or (ui.get(interface.disable_air_switch) and not is_in_air(me)) or not ui.get(interface.tp_hk) then
         return
     end
 
+    -- Check if we're holding a weapon we want to teleport
+    local me_wpn = csgo_weapons(entity.get_player_weapon(me))
+    local wpn_name = me_wpn.name
+    if not contains(WEAPONS, wpn_name) then
+        return
+    end
+    
     -- Extrapolate player pos
     local ticks = ui.get(interface.ticks_slider)
     local me_pos = {entity.hitbox_position(me, HITGROUP)}
@@ -81,6 +91,7 @@ local function tp_helper()
     local players = entity.get_players(true)
 
     for _, player in pairs(players) do
+        -- Trace bullet from enemy eye pos to our hitbox
         local eye_pos = {entity.hitbox_position(player, 0)}
 
         local _, b_dmg = client.trace_bullet(player, eye_pos[1], eye_pos[2], eye_pos[3], x, y, z, true)
