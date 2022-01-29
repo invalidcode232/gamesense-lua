@@ -46,6 +46,8 @@ local interface = {
     tp_weapon_select = ui.new_multiselect(TAB, CONTAINER, 'Teleport weapons', WEAPONS),
     dmg_slider = ui.new_slider(TAB, CONTAINER, 'Minimum teleport damage', 1, 100, 1, true, nil, 1),
     ticks_slider = ui.new_slider(TAB, CONTAINER, 'Predicted ticks', 0, 30, 0, true, nil, 1),
+    tp_lethal_switch = ui.new_checkbox(TAB, CONTAINER, 'Lethal only'),
+    tp_lethal_slider = ui.new_slider(TAB, CONTAINER, '\n', 1, 100, 0, true, 'HP', 1, {}),
     disable_air_switch = ui.new_checkbox(TAB, CONTAINER, 'Disable teleport in air'),
 }
 
@@ -55,9 +57,13 @@ local function handle_visibility()
     ui.set_visible(interface.disable_air_switch, enabled)
     ui.set_visible(interface.dmg_slider, enabled)
     ui.set_visible(interface.ticks_slider, enabled)
+    ui.set_visible(interface.tp_lethal_switch, enabled)
+    ui.set_visible(interface.tp_lethal_slider, enabled and ui.get(interface.tp_lethal_switch))
 end
 
+handle_visibility()
 ui.set_callback(interface.switch, handle_visibility)
+ui.set_callback(interface.tp_lethal_switch, handle_visibility)
 
 local HITGROUP = 4 -- The hitgroup we want to trace
 local teleporting = false -- Needed for indicator
@@ -97,7 +103,9 @@ local function tp_helper()
         local _, b_dmg = client.trace_bullet(player, eye_pos[1], eye_pos[2], eye_pos[3], x, y, z, true)
         b_dmg = client.scale_damage(me, HITGROUP, b_dmg)
 
-        if b_dmg > dmg then
+        local hp = entity.get_prop(player, 'm_iHealth')
+
+        if b_dmg > dmg and (not ui.get(interface.tp_lethal_switch) or hp <= ui.get(interface.tp_lethal_slider)) then
             ui.set(ref.dt[1], false)
             teleporting = true
             clr = {0, 255, 0, 255}
