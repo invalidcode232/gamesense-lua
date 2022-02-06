@@ -44,10 +44,8 @@ local interface = {
     switch = ui.new_checkbox(TAB, CONTAINER, 'Teleport helper'),
     tp_hk = ui.new_hotkey(TAB, CONTAINER, 'tp_hk', true),
     tp_weapon_select = ui.new_multiselect(TAB, CONTAINER, 'Teleport weapons', WEAPONS),
-    dmg_slider = ui.new_slider(TAB, CONTAINER, 'Minimum teleport damage', 1, 100, 1, true, nil, 1),
+    dmg_slider = ui.new_slider(TAB, CONTAINER, 'Minimum teleport damage', 0, 100, 0, true, nil, 1, { [0] = 'Lethal' }),
     ticks_slider = ui.new_slider(TAB, CONTAINER, 'Predicted ticks', 0, 30, 0, true, nil, 1),
-    tp_lethal_switch = ui.new_checkbox(TAB, CONTAINER, 'Lethal only'),
-    tp_lethal_slider = ui.new_slider(TAB, CONTAINER, '\n', 1, 100, 0, true, 'HP', 1, {}),
     disable_air_switch = ui.new_checkbox(TAB, CONTAINER, 'Disable teleport in air'),
 }
 
@@ -57,15 +55,12 @@ local function handle_visibility()
     ui.set_visible(interface.disable_air_switch, enabled)
     ui.set_visible(interface.dmg_slider, enabled)
     ui.set_visible(interface.ticks_slider, enabled)
-    ui.set_visible(interface.tp_lethal_switch, enabled)
-    ui.set_visible(interface.tp_lethal_slider, enabled and ui.get(interface.tp_lethal_switch))
 end
 
 handle_visibility()
 ui.set_callback(interface.switch, handle_visibility)
-ui.set_callback(interface.tp_lethal_switch, handle_visibility)
 
-local HITGROUP = 4 -- The hitgroup we want to trace
+local HITGROUP = 3 -- The hitgroup we want to trace
 local teleporting = false -- Needed for indicator
 local clr = {0, 255, 0, 255} -- Indicator color
 
@@ -95,6 +90,7 @@ local function tp_helper()
     -- Damage calculation
     local dmg = ui.get(interface.dmg_slider)
     local players = entity.get_players(true)
+    local hp = entity.get_prop(me, 'm_iHealth')
 
     for _, player in pairs(players) do
         -- Trace bullet from enemy eye pos to our hitbox
@@ -103,9 +99,9 @@ local function tp_helper()
         local _, b_dmg = client.trace_bullet(player, eye_pos[1], eye_pos[2], eye_pos[3], x, y, z, true)
         b_dmg = client.scale_damage(me, HITGROUP, b_dmg)
 
-        local hp = entity.get_prop(player, 'm_iHealth')
+        local should_tp = dmg == 0 and b_dmg >= hp or b_dmg >= dmg
 
-        if b_dmg > dmg and (not ui.get(interface.tp_lethal_switch) or hp <= ui.get(interface.tp_lethal_slider)) then
+        if should_tp then
             ui.set(ref.dt[1], false)
             teleporting = true
             clr = {0, 255, 0, 255}
