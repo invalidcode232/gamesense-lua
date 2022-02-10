@@ -48,6 +48,7 @@ local antiaim = {
     yaw = { ui_reference("AA", "Anti-aimbot angles", "Yaw") },
     yaw_jitter = { ui_reference("AA", "Anti-aimbot angles", "Yaw jitter") } ,
     body_yaw = { ui_reference("AA", "Anti-aimbot angles", "Body yaw") },
+    roll = ui_reference("AA", "Anti-aimbot angles", "Roll"),
     freestanding_body_yaw = ui_reference("AA", "Anti-aimbot angles", "Freestanding body yaw"),
     fake_yaw_limit = ui_reference("AA", "Anti-aimbot angles", "Fake yaw limit"),
     edge_yaw = ui_reference("AA", "Anti-aimbot angles", "Edge yaw"),
