@@ -54,9 +54,9 @@ for i=1, #config_names do
         target_hitbox_ovr = ui_new_multiselect("LUA", "A", "[" .. config_names[i] .. "] Target hitbox override", { "Head", "Chest", "Arms", "Stomach", "Legs", "Feet" }),
         multipoint = ui_new_multiselect("LUA", "A", "[" .. config_names[i] .. "] Multi-point", { "Head", "Chest", "Arms", "Stomach", "Legs", "Feet" }),
         multipoint_scale = ui_new_slider("LUA", "A", "[" .. config_names[i] .. "] Multi-point scale", 24, 100, 60, true, "%", 1, { [24] = "Auto" }),
-		unsafe = ui_new_multiselect("LUA", "A", "[" .. config_names[i] .. "] Avoid unsafe hitboxes", { "Head", "Chest", "Arms", "Stomach", "Legs", "Feet" }),
+        unsafe = ui_new_multiselect("LUA", "A", "[" .. config_names[i] .. "] Avoid unsafe hitboxes", { "Head", "Chest", "Arms", "Stomach", "Legs", "Feet" }),
         dt_mp_enable = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Custom DT multipoint"),
-        dt_multipoint = ui_new_multiselect("LUA", "A", "[" .. config_names[i] .. "] DT Multi-point", { "Head", "Chest", "Arms", "Stomach", "Legs", "Feet" }),   
+        dt_multipoint = ui_new_multiselect("LUA", "A", "[" .. config_names[i] .. "] DT Multi-point", { "Head", "Chest", "Arms", "Stomach", "Legs", "Feet" }),
         dt_multipoint_scale = ui_new_slider("LUA", "A", "[" .. config_names[i] .. "] DT Multi-point scale", 24, 100, 60, true, "%", 1, { [24] = "Auto" }),
         prefer_safe_point = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Prefer safe point"),
         dt_prefer_safe_point = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Prefer safe point on DT"),
@@ -65,7 +65,7 @@ for i=1, #config_names do
         automatic_scope = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Automatic scope"),
         silent_aim = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Silent aim"),
         hitchance = ui_new_slider("LUA", "A", "[" .. config_names[i] .. "] Hitchance", 0, 100, 50, true, "%", 1, {"Off"}),
-        hitchance_ovr = ui_new_slider("LUA", "A", "[" .. config_names[i] .. "] Hitchance override", 0, 100, 50, true, "%", 1, {"Off"}),        
+        hitchance_ovr = ui_new_slider("LUA", "A", "[" .. config_names[i] .. "] Hitchance override", 0, 100, 50, true, "%", 1, {"Off"}),
         ns_hitchance = ui_new_slider("LUA", "A", "[" .. config_names[i] .. "] Noscope hitchance", 0, 100, 50, true, "%", 1, {"Off"}),
         air_hc_enable = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Custom hitchance in air"),
         hitchance_air = ui_new_slider("LUA", "A", "[" .. config_names[i] .. "] Hitchance in air", 0, 100, 50, true, "%", 1, {"Off"}),
@@ -79,12 +79,12 @@ for i=1, #config_names do
 
         quick_stop = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Quick stop"),
         quick_stop_options = ui_new_multiselect("LUA", "A", "[" .. config_names[i] .. "] Quick stop options", {"Early", "Slow motion", "Duck", "Fake duck", "Move between shots", "Ignore molotov", "Taser"}),
-        
+
         quick_stop_ns = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Quick stop noscope"),
         quick_stop_options_ns = ui_new_multiselect("LUA", "A", "[" .. config_names[i] .. "] Quick stop options ns", {"Early", "Slow motion", "Duck", "Fake duck", "Move between shots", "Ignore molotov", "Taser"}),
 
         force_baim_lethal = ui_new_checkbox("LUA", "A", "[" ..  config_names[i] .. "] Force body aim on lethal"),
-        
+
         prefer_baim = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Prefer body aim"),
         prefer_baim_disablers = ui_new_multiselect("LUA", "A", "[" .. config_names[i] .. "] Prefer body aim disablers", {"Low inaccuracy", "Target shot fired", "Target resolved", "Safe point headshot", "Low damage"}),
         delay_shot = ui_new_checkbox("LUA", "A", "[" .. config_names[i] .. "] Delay shot"),
@@ -182,12 +182,12 @@ local mindmg = {
 local plist_set, plist_get = plist.set, plist.get
 
 --#region rev lethal
-local function Vector(x,y,z) 
-	return {x=x or 0,y=y or 0,z=z or 0} 
+local function Vector(x,y,z)
+    return {x=x or 0,y=y or 0,z=z or 0}
 end
 
-local function Distance(from_x,from_y,from_z,to_x,to_y,to_z)  
-  return math_ceil(math_sqrt(math_pow(from_x - to_x, 2) + math_pow(from_y - to_y, 2) + math_pow(from_z - to_z, 2)))
+local function Distance(from_x,from_y,from_z,to_x,to_y,to_z)
+    return math_ceil(math_sqrt(math_pow(from_x - to_x, 2) + math_pow(from_y - to_y, 2) + math_pow(from_z - to_z, 2)))
 end
 
 local function extrapolate_position(xpos, ypos, zpos, ticks, ent)
@@ -211,30 +211,30 @@ local function get_ent_dist(ent_1, ent_2)
 end
 
 local function check_revolver_distance(player,victim)
-	if player == nil then return end
-	if victim == nil then return end
-	
+    if player == nil then return end
+    if victim == nil then return end
+
     local weap = entity.get_prop(entity.get_prop(player, "m_hActiveWeapon"), "m_iItemDefinitionIndex")
-	if weap == nil then return end
-	local vnum = bit.band(weap, 0xFFFF)
-	local player_origin = Vector(entity.get_prop(player, "m_vecOrigin"))
-	local victim_origin = Vector(entity.get_prop(victim, "m_vecOrigin"))
+    if weap == nil then return end
+    local vnum = bit.band(weap, 0xFFFF)
+    local player_origin = Vector(entity.get_prop(player, "m_vecOrigin"))
+    local victim_origin = Vector(entity.get_prop(victim, "m_vecOrigin"))
 
 
-	local units = Distance(player_origin.x, player_origin.y, player_origin.z, victim_origin.x, victim_origin.y, victim_origin.z)
-	local no_kevlar = entity.get_prop(victim, "m_ArmorValue") == 0	
+    local units = Distance(player_origin.x, player_origin.y, player_origin.z, victim_origin.x, victim_origin.y, victim_origin.z)
+    local no_kevlar = entity.get_prop(victim, "m_ArmorValue") == 0
 
-	if not (vnum == 64 and no_kevlar) then
-		return 0
+    if not (vnum == 64 and no_kevlar) then
+        return 0
     end
-    
+
     if units < 585 and units > 511 then
-		return 1
+        return 1
     elseif units < 511 then
-		return 2
+        return 2
     else
-		return 0
-	end
+        return 0
+    end
 end
 
 local local_player
@@ -245,8 +245,8 @@ local ovr_add_disabled
 
 local function handle_ovr()
     local ovr_k_temp = ui_get(ovr_key)
-    if ovr_k_temp ~= ovr_key_state then 
-        if ovr_add_disabled then 
+    if ovr_k_temp ~= ovr_key_state then
+        if ovr_add_disabled then
             ovr_selected = ovr_selected == 0 and 1 or 0
         else
             ovr_selected = ovr_selected ~= 2 and ovr_selected + 1 or 0
@@ -276,8 +276,8 @@ local function run_adjustments()
     lethal_enemies = {}
 
     for i=1, #players do
-        local entindex = players[i]	
-		revolver = check_revolver_distance(local_player,entindex)
+        local entindex = players[i]
+        revolver = check_revolver_distance(local_player,entindex)
 
         if ui_get(prioritize_awp) then
             local weapon = entity_get_player_weapon(entindex)
@@ -300,7 +300,7 @@ local function run_adjustments()
             local enemy_pos = { entity_hitbox_position(entindex, 3) }
 
             local enemy_health = entity_get_prop(entindex, "m_iHealth")
-            
+
             local _, damage = client.trace_bullet(me, me_pos[1], me_pos[2], me_pos[3], enemy_pos[1], enemy_pos[2], enemy_pos[3], false)
 
             plist_set(entindex, 'Override prefer body aim', damage >= enemy_health and 'Force' or '-')
@@ -362,15 +362,15 @@ local function run_visuals()
 
     -- if ui_get(unsafe_ovr_key) then
     --     renderer_indicator(255, 255, 255, 255, "UNSAFE OVR")
-	-- end
-	
-	-- if ui_get(target_hitbox_ovr_key) then
-	-- 	renderer_indicator(255, 255, 255, 255, "HITBOX OVR")
-	-- end
-	
-	if ui_get(ovr_hc_key) then
-		renderer_indicator(255, 255, 255, 255, "HITCHANCE OVR")
-	end
+    -- end
+
+    -- if ui_get(target_hitbox_ovr_key) then
+    -- 	renderer_indicator(255, 255, 255, 255, "HITBOX OVR")
+    -- end
+
+    if ui_get(ovr_hc_key) then
+        renderer_indicator(255, 255, 255, 255, "HITCHANCE OVR")
+    end
 
 end
 
@@ -378,8 +378,8 @@ local screen = {client.screen_size()}
 local center = {screen[1]/2, screen[2]/2}
 
 --local function paint()
-    --renderer.text(screen[1] - 92, 0, 255,255, 255, 255, nil, 0, "shoppy.gg/" )
-    --renderer.text(screen[1] - 40, 0, 50, 255, 50, 255, nil, 0, "@amgis" )
+--renderer.text(screen[1] - 92, 0, 255,255, 255, 255, nil, 0, "shoppy.gg/" )
+--renderer.text(screen[1] - 40, 0, 50, 255, 50, 255, nil, 0, "@amgis" )
 --end
 --client.set_event_callback("paint", paint)
 
@@ -405,7 +405,7 @@ local function handle_menu()
         ui_set_visible(rage[i].target_selection, show)
         ui_set_visible(rage[i].target_hitbox, show)
         ui_set_visible(rage[i].multipoint, show)
-		ui_set_visible(rage[i].unsafe, show)
+        ui_set_visible(rage[i].unsafe, show)
         ui_set_visible(rage[i].force_baim_lethal, show)
         ui_set_visible(rage[i].multipoint_scale, show and #{unpack(ui_get(rage[i].multipoint))} > 0)
         ui_set_visible(rage[i].dt_mp_enable, show)
@@ -430,7 +430,7 @@ local function handle_menu()
         ui_set_visible(rage[i].ovr_min_damage, show and contains(ui_get(rage[i].custom_damage), "On-key"))
         ui_set_visible(rage[i].ovr_min_damage2, show and contains(ui_get(rage[i].custom_damage), "On-key"))
 
-        
+
         ui_set_visible(rage[i].automatic_scope, show)
         --ui_set_visible(rage[i].accuracy_boost, show)
         ui_set_visible(rage[i].delay_shot, show)
@@ -464,7 +464,7 @@ local function handle_menu()
     ui_set_visible(rage[scoped_wpn_idx[1]].js_prefer_baim_disablers, js_enable and ui_get(rage[scoped_wpn_idx[1]].js_prefer_baim))
     ui_set_visible(rage[scoped_wpn_idx[1]].js_delay_shot, js_enable)
 
-    ui_set_visible(rage[scoped_wpn_idx[2]].doubletap_stop_ns, enabled and ui_get(ref_doubletap) and ui_get(active_wpn) == "Auto")   
+    ui_set_visible(rage[scoped_wpn_idx[2]].doubletap_stop_ns, enabled and ui_get(ref_doubletap) and ui_get(active_wpn) == "Auto")
 end
 handle_menu()
 
@@ -515,10 +515,10 @@ local function set_config(idx)
             mindmg.second = ui_get(rage[i].ovr_min_damage)
         else
             ovr_add_disabled = ui_get(rage[i].ovr_min_damage2) == -1
-            
+
             damage_val = ovr_add_disabled and ui_get(rage[i].ovr_min_damage) or
-            (ovr_selected == 1 and ui_get(rage[i].ovr_min_damage) or ui_get(rage[i].ovr_min_damage2))
-            
+                    (ovr_selected == 1 and ui_get(rage[i].ovr_min_damage) or ui_get(rage[i].ovr_min_damage2))
+
             -- mindmg.second = ovr_add_disabled and ui_get(rage[i].ovr_min_damage2) or mindmg.cache_main
             if ovr_selected == 1 and not ovr_add_disabled then
                 mindmg.second = ui_get(rage[i].ovr_min_damage2)
@@ -531,18 +531,18 @@ local function set_config(idx)
     end
 
     local hc_val =  (ui_get(ovr_hc_key) and ui_get(rage[i].hitchance_ovr)) or                              -- OVERRIDE HC
-                    ((ui_get(rage[i].air_hc_enable) and not onground) and ui_get(rage[i].hitchance_air)) or -- IN AIR HC
-                    (is_scoped == 0 and contains(scoped_wpn_idx, i) and ui_get(rage[i].ns_hitchance)) or -- NO SCOPE HC ON SCOPED WPNS
-                    (ui_get(rage[i].hitchance))                                                          -- DEFAULT HC
+            ((ui_get(rage[i].air_hc_enable) and not onground) and ui_get(rage[i].hitchance_air)) or -- IN AIR HC
+            (is_scoped == 0 and contains(scoped_wpn_idx, i) and ui_get(rage[i].ns_hitchance)) or -- NO SCOPE HC ON SCOPED WPNS
+            (ui_get(rage[i].hitchance))                                                          -- DEFAULT HC
 
     local doubletapping = ui_get(ref_doubletap) and ui_get(ref_doubletapkey)
-    local custom_mp = ui_get(rage[i].dt_mp_enable) and doubletapping  
+    local custom_mp = ui_get(rage[i].dt_mp_enable) and doubletapping
     local custom_psp = ui_get(rage[i].dt_prefer_safe_point) and doubletapping
     local psp_val = ui_get(rage[i].prefer_safe_point) and not doubletapping or custom_psp
 
     local thb_val =  ui_get(target_hitbox_ovr_key) and target_hitboxes_ovr or ui_get(rage[i].target_hitbox)
     local mp_val = custom_mp and ui_get(rage[i].dt_multipoint) or ui_get(rage[i].multipoint)
-	local unsafe_val = ui_get(rage[i].unsafe)
+    local unsafe_val = ui_get(rage[i].unsafe)
     local mps_val = custom_mp and ui_get(rage[i].dt_multipoint_scale) or ui_get(rage[i].multipoint_scale)
     local ds_val = ui_get(rage[i].delay_shot_dist) == -1 and ui_get(rage[i].delay_shot) or (rage[i].delay_shot and rage[i].delay_shot_dist < closest_dist)
 
@@ -559,7 +559,7 @@ local function set_config(idx)
 
     local qs_val = {ui_get(rage[i].quick_stop), ui_get(rage[i].quick_stop_options)}
     local dt_qs_val = ui_get(rage[i].doubletap_stop)
-    
+
     if i == scoped_wpn_idx[2] then
         qs_val = is_scoped == 0 and {ui_get(rage[i].quick_stop_ns), ui_get(rage[i].quick_stop_options_ns)} or   -- 1. NO SCOPE QS
                 {ui_get(rage[i].quick_stop), ui_get(rage[i].quick_stop_options)}                                -- DEFAULT QS
@@ -572,8 +572,8 @@ local function set_config(idx)
     ui_set(ref_automatic_penetration, ui_get(rage[i].automatic_penetration))
     ui_set(ref_silent_aim, ui_get(rage[i].silent_aim))
     --ui_set(ref_accuracy_boost, ui_get(rage[i].accuracy_boost))
-	
-    
+
+
     if js_state then
         ui_set(ref_target_hitbox, ui_get(rage[scoped_wpn_idx[1]].js_target_hitbox))
         ui_set(ref_multipoint, ui_get(rage[scoped_wpn_idx[1]].js_multipoint))
@@ -589,7 +589,7 @@ local function set_config(idx)
         ui_set(ref_prefer_bodyaim, ui_get(rage[scoped_wpn_idx[1]].js_prefer_baim))
         ui_set(ref_prefer_bodyaim_disablers, ui_get(rage[scoped_wpn_idx[1]].js_prefer_baim_disablers))
         ui_set(ref_delay_shot, ui_get(rage[scoped_wpn_idx[1]].js_delay_shot))
-       --ui_set(ref_force_baim_peek, ui_get(rage[scoped_wpn_idx[1]].js_force_baim_peek))
+        --ui_set(ref_force_baim_peek, ui_get(rage[scoped_wpn_idx[1]].js_force_baim_peek))
     else
         ui_set(ref_target_hitbox, thb_val)
         ui_set(ref_multipoint, mp_val)
@@ -643,7 +643,7 @@ end
 
 local function on_paint(c)
     if entity_is_alive(local_player) then else return end
-    
+
     handle_ovr()
     run_visuals()
 end
@@ -664,7 +664,7 @@ local function init_callbacks()
 
     for i=1, #config_names do
         ui_set_callback(rage[i].multipoint, handle_menu)
-		ui_set_callback(rage[i].unsafe, handle_menu)
+        ui_set_callback(rage[i].unsafe, handle_menu)
         ui_set_callback(rage[i].prefer_baim, handle_menu)
         ui_set_callback(rage[i].quick_stop, handle_menu)
         ui_set_callback(rage[i].quick_stop_ns, handle_menu)
